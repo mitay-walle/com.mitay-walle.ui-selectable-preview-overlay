@@ -1,11 +1,13 @@
 # com.mitay-walle.ui-selectable-preview-overlay
 Unity3d SceneView Overlay to preview Graphic states of UI.Selectable (Button, Toggle etc) 
+![selectableOverlay](https://github.com/user-attachments/assets/680a86c0-9de2-4b9d-8f7a-12421a89a524)
+
 ## Installation
 - copy [SceneOverlayPreviewSelectable.cs](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SceneOverlayPreviewSelectable.cs) to folder "Project/Assets/../Editor/.."
 ## Summary
 - single-file script
 - dockable overlay
-- hides if no Selectables selected
+- hides if no Selectable in selection
 - not change any Serialized (saved) values, only temporal
 - preview all built-in animations: color, sprite swap, animation,
 - preview Custom animations based on UI.Selectable.DoStateTransition 
