@@ -11,7 +11,8 @@ Unity3d SceneView Overlay to preview Graphic states of UI.Selectable (Button, To
 - hides if no Selectable in selection
 - not change any Serialized (saved) values, only temporal
 - preview all built-in animations: color, sprite swap, animation,
-- preview Custom animations based on UI.Selectable.DoStateTransition 
+- preview Custom animations based on UI.Selectable.DoStateTransition
+- Tested witn Unity 6, Unity 2022
 ## Support Any Selectables
 - Button
 - Toggle (Include isOn graphic)
