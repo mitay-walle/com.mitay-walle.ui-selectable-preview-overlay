@@ -13,20 +13,22 @@ using Toggle = UnityEngine.UI.Toggle;
 namespace Plugins.mitaywalle.UI.Editor
 {
 	[Overlay(typeof(SceneView), ID)]
-	public sealed class SceneOverlayPreviewSelectable : ToolbarOverlay,ITransientOverlay
+	public sealed class SceneOverlayPreviewSelectable : ToolbarOverlay, ITransientOverlay
 	{
 		public const string ID = "UI Selectable";
 		public bool visible => Selection.GetFiltered<Selectable>(SelectionMode.TopLevel).Length > 0;
 
-		private static MethodInfo _instantClearState;
+		private static MethodInfo _onValidate;
 		private static MethodInfo _doStateTransition;
 		private static MethodInfo _togglePlayEffect;
+		private static MethodInfo _OnValidate;
+		private static MethodInfo _OnCanvasGroupChanged;
+		private static FieldInfo _m_GroupsAllowInteraction;
 		private static PropertyInfo _currentSelectionState;
 		private static PropertyInfo _isPointerDown;
 		private static PropertyInfo _isPointerInside;
 		private static PropertyInfo _hasSelection;
 		private static SelectionState? _selectionState;
-		private static bool _isDisabled;
 		private static bool _isOn;
 		private static Type _type;
 		private static object[] _args1 = new object[1];
@@ -55,8 +57,10 @@ namespace Plugins.mitaywalle.UI.Editor
 			var type = typeof(Selectable);
 			collapsedIcon = (Texture2D)EditorGUIUtility.IconContent("d_Selectable Icon").image;
 			_togglePlayEffect = typeof(Toggle).GetMethod("PlayEffect", BindingFlags.Instance | BindingFlags.NonPublic);
-			_instantClearState = type.GetMethod("EvaluateAndTransitionToSelectionState", BindingFlags.Instance | BindingFlags.NonPublic);
+			_onValidate = type.GetMethod("OnValidate", BindingFlags.Instance | BindingFlags.NonPublic);
+			_OnCanvasGroupChanged = type.GetMethod("OnCanvasGroupChanged", BindingFlags.Instance | BindingFlags.NonPublic);
 			_doStateTransition = type.GetMethod("DoStateTransition", BindingFlags.Instance | BindingFlags.NonPublic);
+			_m_GroupsAllowInteraction = type.GetField("m_GroupsAllowInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
 			_currentSelectionState = type.GetProperty("currentSelectionState", BindingFlags.Instance | BindingFlags.NonPublic);
 			_isPointerDown = type.GetProperty("isPointerDown", BindingFlags.Instance | BindingFlags.NonPublic);
 			_isPointerInside = type.GetProperty("isPointerInside", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -97,7 +101,6 @@ namespace Plugins.mitaywalle.UI.Editor
 					}
 
 					OnClick(state);
-					RebuildSelectablesVisual();
 				});
 
 				_toggles.Add(toggle);
@@ -118,7 +121,7 @@ namespace Plugins.mitaywalle.UI.Editor
 		{
 			if (Selection.GetFiltered<Selectable>(SelectionMode.Deep)?.Length == 0) return;
 
-			RebuildSelectablesVisual();
+			//RebuildSelectablesVisual();
 		}
 
 		private void OnSelectionChanged()
@@ -126,17 +129,6 @@ namespace Plugins.mitaywalle.UI.Editor
 			RevertLast();
 			RebuildSelectablesVisual();
 			_last = Selection.gameObjects;
-		}
-
-		private static void OnClick(SelectionState? state)
-		{
-			_selectionState = _selectionState == state ? null : state;
-
-			_isDisabled = state == SelectionState.Disabled;
-
-			Debug.Log(_selectionState);
-
-			SceneView.lastActiveSceneView.Repaint();
 		}
 
 		private static void RevertLast()
@@ -150,7 +142,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 				if (gameObject.TryGetComponent<Selectable>(out var selectable))
 				{
-					_instantClearState.Invoke(selectable, null);
+					_onValidate.Invoke(selectable, null);
 				}
 
 				if (selectable is Toggle toggle)
@@ -161,18 +153,21 @@ namespace Plugins.mitaywalle.UI.Editor
 			}
 		}
 
+		private static void OnClick(SelectionState? state)
+		{
+			_selectionState = _selectionState == state ? null : state;
+
+			Debug.Log(_selectionState);
+
+			RebuildSelectablesVisual();
+			SceneView.lastActiveSceneView.Repaint();
+		}
+
 		private static void RebuildSelectablesVisual()
 		{
 			foreach (Selectable selectable in Selection.GetFiltered<Selectable>(SelectionMode.TopLevel))
 			{
-				if (_selectionState.HasValue)
-				{
-					RebuildSelectablesVisual(selectable);
-				}
-				else
-				{
-					_instantClearState.Invoke(selectable, null);
-				}
+				RebuildSelectablesVisual(selectable);
 
 				if (selectable is Toggle toggle)
 				{
@@ -204,15 +199,19 @@ namespace Plugins.mitaywalle.UI.Editor
 
 		private static void RebuildSelectablesVisual(Selectable selectable)
 		{
-			SelectionState state = default;
-			if (_selectionState.HasValue)
+			RebuildSelectablesVisual(selectable, _selectionState);
+		}
+
+		private static void RebuildSelectablesVisual(Selectable selectable, SelectionState? state)
+		{
+			if (state.HasValue)
 			{
-				_args2[0] = _selectionState.Value;
-				switch (_selectionState)
+				_args2[0] = state.Value;
+				switch (state)
 				{
 					case SelectionState.Normal:
 					{
-						selectable.interactable = true;
+						_m_GroupsAllowInteraction.SetValue(selectable, true);
 						_isPointerInside.SetValue(selectable, false);
 						_isPointerDown.SetValue(selectable, false);
 						_hasSelection.SetValue(selectable, false);
@@ -221,7 +220,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 					case SelectionState.Highlighted:
 					{
-						selectable.interactable = true;
+						_m_GroupsAllowInteraction.SetValue(selectable, true);
 						_isPointerInside.SetValue(selectable, true);
 						_isPointerDown.SetValue(selectable, false);
 						_hasSelection.SetValue(selectable, false);
@@ -230,7 +229,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 					case SelectionState.Pressed:
 					{
-						selectable.interactable = true;
+						_m_GroupsAllowInteraction.SetValue(selectable, true);
 						_isPointerInside.SetValue(selectable, true);
 						_hasSelection.SetValue(selectable, true);
 						_isPointerDown.SetValue(selectable, true);
@@ -239,7 +238,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 					case SelectionState.Selected:
 					{
-						selectable.interactable = true;
+						_m_GroupsAllowInteraction.SetValue(selectable, true);
 						_isPointerInside.SetValue(selectable, false);
 						_hasSelection.SetValue(selectable, false);
 						_isPointerDown.SetValue(selectable, true);
@@ -248,7 +247,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 					case SelectionState.Disabled:
 					{
-						selectable.interactable = false;
+						_m_GroupsAllowInteraction.SetValue(selectable, false);
 						_isPointerInside.SetValue(selectable, false);
 						_isPointerDown.SetValue(selectable, false);
 						_hasSelection.SetValue(selectable, false);
@@ -256,11 +255,17 @@ namespace Plugins.mitaywalle.UI.Editor
 					}
 				}
 
-				_args2[0] = (int)_selectionState;
+				_args2[0] = (int)state.Value;
 			}
 			else
 			{
+				_OnCanvasGroupChanged.Invoke(selectable, null);
+				_isPointerInside.SetValue(selectable, false);
+				_isPointerDown.SetValue(selectable, false);
+				_hasSelection.SetValue(selectable, false);
+
 				_args2[0] = (int)_currentSelectionState.GetValue(selectable);
+				Debug.Log("Clear");
 			}
 
 			_args2[1] = true;
@@ -357,10 +362,10 @@ namespace Plugins.mitaywalle.UI.Editor
 								element.SetValueWithoutNotify(false);
 							}
 						}
-
-						OnClick(state);
-						RebuildSelectablesVisual();
 					}
+
+					OnClick(state);
+					RebuildSelectablesVisual();
 				});
 			}
 		}
@@ -378,7 +383,6 @@ namespace Plugins.mitaywalle.UI.Editor
 				this.RegisterValueChangedCallback(newValue => SetToggleClick(newValue.newValue));
 			}
 		}
-
 	}
 
 	public class Icons
