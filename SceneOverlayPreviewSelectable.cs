@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.Overlays;
@@ -11,13 +10,13 @@ using UnityEngine.UIElements;
 using Image = UnityEngine.UIElements.Image;
 using Toggle = UnityEngine.UI.Toggle;
 
-namespace UI.Extended.Editor
+namespace Plugins.mitaywalle.UI.Editor
 {
-
 	[Overlay(typeof(SceneView), ID)]
-	public sealed class SceneOverlayPreviewSelectable : ToolbarOverlay
+	public sealed class SceneOverlayPreviewSelectable : ToolbarOverlay,ITransientOverlay
 	{
 		public const string ID = "UI Selectable";
+		public bool visible => Selection.GetFiltered<Selectable>(SelectionMode.TopLevel).Length > 0;
 
 		private static MethodInfo _instantClearState;
 		private static MethodInfo _doStateTransition;
@@ -33,22 +32,19 @@ namespace UI.Extended.Editor
 		private static object[] _args1 = new object[1];
 		private static object[] _args2 = new object[2];
 		private HashSet<EditorToolbarToggle> _toggles = new();
-		private static readonly string[] values = (Enum.GetValues(typeof(SelectionState)) as SelectionState[]).Select(e => $"{nameof(SelectionState)}.{e}").ToArray();
+		private static readonly string[] values =
+		{
+			$"{nameof(SelectionState)}.{SelectionState.Normal}",
+			$"{nameof(SelectionState)}.{SelectionState.Highlighted}",
+			$"{nameof(SelectionState)}.{SelectionState.Pressed}",
+			$"{nameof(SelectionState)}.{SelectionState.Selected}",
+			$"{nameof(SelectionState)}.{SelectionState.Disabled}",
+			ToggleSelectableStateIsOn.id,
+		};
 
 		private static GameObject[] _last;
 
-		public override IEnumerable<string> toolbarElements
-		{
-			get
-			{
-				foreach (string value in values)
-				{
-					yield return value;
-				}
-
-				yield return ToggleSelectableStateIsOn.id;
-			}
-		}
+		public SceneOverlayPreviewSelectable() : base(values) { }
 
 		public override void OnCreated()
 		{
@@ -81,12 +77,14 @@ namespace UI.Extended.Editor
 			// root.isMultipleSelection = false;
 			// root.allowEmptySelection = true;
 
+			root.style.alignContent = new StyleEnum<Align>(Align.Stretch);
 			foreach (SelectionState state in Enum.GetValues(typeof(SelectionState)))
 			{
 				var toggle = new EditorToolbarToggle();
 
 				toggle.icon = Icons.Get(state);
 				toggle.tooltip = toggle.text = state.ToString();
+				toggle.Q<Image>().style.alignSelf = new StyleEnum<Align>(Align.Auto);
 				toggle.SetValueWithoutNotify(_selectionState == state);
 				toggle.RegisterValueChangedCallback(_ =>
 				{
@@ -109,10 +107,7 @@ namespace UI.Extended.Editor
 			var toggle2 = new EditorToolbarToggle("Inverted");
 			toggle2.icon = Icons.isOn;
 			toggle2.SetValueWithoutNotify(_isOn);
-			toggle2.RegisterValueChangedCallback(value =>
-			{
-				SetToggleClick(value.newValue);
-			});
+			toggle2.RegisterValueChangedCallback(value => { SetToggleClick(value.newValue); });
 
 			root.Add(toggle2);
 
@@ -165,6 +160,7 @@ namespace UI.Extended.Editor
 				}
 			}
 		}
+
 		private static void RebuildSelectablesVisual()
 		{
 			foreach (Selectable selectable in Selection.GetFiltered<Selectable>(SelectionMode.TopLevel))
@@ -190,6 +186,7 @@ namespace UI.Extended.Editor
 			_isOn = state;
 			RebuildSelectablesVisual();
 		}
+
 		private static void SetToggleValue(Toggle toggle, bool state)
 		{
 			if (toggle.graphic == null)
@@ -214,49 +211,49 @@ namespace UI.Extended.Editor
 				switch (_selectionState)
 				{
 					case SelectionState.Normal:
-						{
-							selectable.interactable = true;
-							_isPointerInside.SetValue(selectable, false);
-							_isPointerDown.SetValue(selectable, false);
-							_hasSelection.SetValue(selectable, false);
-							break;
-						}
+					{
+						selectable.interactable = true;
+						_isPointerInside.SetValue(selectable, false);
+						_isPointerDown.SetValue(selectable, false);
+						_hasSelection.SetValue(selectable, false);
+						break;
+					}
 
 					case SelectionState.Highlighted:
-						{
-							selectable.interactable = true;
-							_isPointerInside.SetValue(selectable, true);
-							_isPointerDown.SetValue(selectable, false);
-							_hasSelection.SetValue(selectable, false);
-							break;
-						}
+					{
+						selectable.interactable = true;
+						_isPointerInside.SetValue(selectable, true);
+						_isPointerDown.SetValue(selectable, false);
+						_hasSelection.SetValue(selectable, false);
+						break;
+					}
 
 					case SelectionState.Pressed:
-						{
-							selectable.interactable = true;
-							_isPointerInside.SetValue(selectable, true);
-							_hasSelection.SetValue(selectable, true);
-							_isPointerDown.SetValue(selectable, true);
-							break;
-						}
+					{
+						selectable.interactable = true;
+						_isPointerInside.SetValue(selectable, true);
+						_hasSelection.SetValue(selectable, true);
+						_isPointerDown.SetValue(selectable, true);
+						break;
+					}
 
 					case SelectionState.Selected:
-						{
-							selectable.interactable = true;
-							_isPointerInside.SetValue(selectable, false);
-							_hasSelection.SetValue(selectable, false);
-							_isPointerDown.SetValue(selectable, true);
-							break;
-						}
+					{
+						selectable.interactable = true;
+						_isPointerInside.SetValue(selectable, false);
+						_hasSelection.SetValue(selectable, false);
+						_isPointerDown.SetValue(selectable, true);
+						break;
+					}
 
 					case SelectionState.Disabled:
-						{
-							selectable.interactable = false;
-							_isPointerInside.SetValue(selectable, false);
-							_isPointerDown.SetValue(selectable, false);
-							_hasSelection.SetValue(selectable, false);
-							break;
-						}
+					{
+						selectable.interactable = false;
+						_isPointerInside.SetValue(selectable, false);
+						_isPointerDown.SetValue(selectable, false);
+						_hasSelection.SetValue(selectable, false);
+						break;
+					}
 				}
 
 				_args2[0] = (int)_selectionState;
@@ -367,10 +364,12 @@ namespace UI.Extended.Editor
 				});
 			}
 		}
+
 		[EditorToolbarElement(id, typeof(SceneView))]
 		public sealed class ToggleSelectableStateIsOn : EditorToolbarToggle
 		{
 			public const string id = "Toggle.isOn";
+
 			public ToggleSelectableStateIsOn()
 			{
 				icon = Icons.isOn;
@@ -379,6 +378,7 @@ namespace UI.Extended.Editor
 				this.RegisterValueChangedCallback(newValue => SetToggleClick(newValue.newValue));
 			}
 		}
+
 	}
 
 	public class Icons
