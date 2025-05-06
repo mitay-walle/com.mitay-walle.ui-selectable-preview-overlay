@@ -27,11 +27,6 @@ Panel / horizontal docked / vertical docked / collapsed
 - Scrollbar
 - Any custom Selectable, animated through [UI.Selectable.DoStateTransition()](https://docs.unity.cn/Packages/com.unity.ugui@1.0/api/UnityEngine.UI.Selectable.html#UnityEngine_UI_Selectable_DoStateTransition_UnityEngine_UI_Selectable_SelectionState_System_Boolean_)
 
-## Known Issues
-- [ ] [#1 Deselection not revert state](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/issues/1)
-
-- [ ] [#2 Clicks on overlay buttons change visual not immediately](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/issues/2)
-
 ## Screenshots
 Normal state no overrides, undocked Panel view
 
