@@ -3,6 +3,13 @@ Unity3d SceneView Overlay to preview Graphic states of UI.Selectable (Button, To
 
 ![selectableOverlay2](https://github.com/user-attachments/assets/419b50d8-11ab-4150-9c5b-2fb770c73135)
 
+Panel / horizontal docked / vertical docked / collapsed
+
+![image](https://github.com/user-attachments/assets/c6db07fb-74f3-4c1b-911f-d28972dedabc)
+![image](https://github.com/user-attachments/assets/cb7c8f9c-944f-4a03-b38b-803eb7f4be6d)
+![image](https://github.com/user-attachments/assets/f70aa3ef-91a6-4fcb-b902-fd327f8973f3)
+![image](https://github.com/user-attachments/assets/92c5fbe7-6608-48e3-b3fc-ed4c36f4d04b)
+
 ## Installation
 - copy [SceneOverlayPreviewSelectable.cs](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SceneOverlayPreviewSelectable.cs) to folder "Project/Assets/../Editor/.."
 ## Summary
