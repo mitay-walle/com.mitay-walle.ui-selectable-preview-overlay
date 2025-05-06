@@ -142,13 +142,13 @@ namespace Plugins.mitaywalle.UI.Editor
 
 				if (gameObject.TryGetComponent<Selectable>(out var selectable))
 				{
-					_onValidate.Invoke(selectable, null);
-				}
+					RebuildSelectablesVisual(selectable, null);
 
-				if (selectable is Toggle toggle)
-				{
-					_args1[0] = true;
-					_togglePlayEffect.Invoke(toggle, _args1);
+					if (selectable is Toggle toggle)
+					{
+						_args1[0] = true;
+						_togglePlayEffect.Invoke(toggle, _args1);
+					}
 				}
 			}
 		}
