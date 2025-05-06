@@ -18,7 +18,6 @@ namespace Plugins.mitaywalle.UI.Editor
 		public const string ID = "UI Selectable";
 		public bool visible => Selection.GetFiltered<Selectable>(SelectionMode.TopLevel).Length > 0;
 
-		private static MethodInfo _onValidate;
 		private static MethodInfo _doStateTransition;
 		private static MethodInfo _togglePlayEffect;
 		private static MethodInfo _OnValidate;
@@ -57,7 +56,7 @@ namespace Plugins.mitaywalle.UI.Editor
 			var type = typeof(Selectable);
 			collapsedIcon = (Texture2D)EditorGUIUtility.IconContent("d_Selectable Icon").image;
 			_togglePlayEffect = typeof(Toggle).GetMethod("PlayEffect", BindingFlags.Instance | BindingFlags.NonPublic);
-			_onValidate = type.GetMethod("OnValidate", BindingFlags.Instance | BindingFlags.NonPublic);
+			_OnValidate = type.GetMethod("OnValidate", BindingFlags.Instance | BindingFlags.NonPublic);
 			_OnCanvasGroupChanged = type.GetMethod("OnCanvasGroupChanged", BindingFlags.Instance | BindingFlags.NonPublic);
 			_doStateTransition = type.GetMethod("DoStateTransition", BindingFlags.Instance | BindingFlags.NonPublic);
 			_m_GroupsAllowInteraction = type.GetField("m_GroupsAllowInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -142,13 +141,13 @@ namespace Plugins.mitaywalle.UI.Editor
 
 				if (gameObject.TryGetComponent<Selectable>(out var selectable))
 				{
-					RebuildSelectablesVisual(selectable, null);
-
 					if (selectable is Toggle toggle)
 					{
 						_args1[0] = true;
 						_togglePlayEffect.Invoke(toggle, _args1);
 					}
+
+					RebuildSelectablesVisual(selectable, null);
 				}
 			}
 		}
@@ -157,7 +156,7 @@ namespace Plugins.mitaywalle.UI.Editor
 		{
 			_selectionState = _selectionState == state ? null : state;
 
-			Debug.Log(_selectionState);
+			//Debug.Log(_selectionState);
 
 			RebuildSelectablesVisual();
 			SceneView.lastActiveSceneView.Repaint();
@@ -265,9 +264,9 @@ namespace Plugins.mitaywalle.UI.Editor
 				_hasSelection.SetValue(selectable, false);
 
 				_args2[0] = (int)_currentSelectionState.GetValue(selectable);
-				Debug.Log("Clear");
 			}
 
+			//Debug.Log((SelectionState)_currentSelectionState.GetValue(selectable));
 			_args2[1] = true;
 			for (int i = 0; i < 2; i++)
 			{
@@ -278,7 +277,12 @@ namespace Plugins.mitaywalle.UI.Editor
 				}
 			}
 
-			//Debug.Log((SelectionState)_currentSelectionState.GetValue(selectable));
+			if (state == null)
+			{
+				_OnCanvasGroupChanged.Invoke(selectable, null);
+				_OnValidate.Invoke(selectable, null);
+			}
+			EditorUtility.SetDirty(selectable);
 		}
 
 		/// <summary>
