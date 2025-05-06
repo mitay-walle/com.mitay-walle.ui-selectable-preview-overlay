@@ -1,7 +1,8 @@
 # Unity3d Selectable Preview Overlay
 Unity3d SceneView Overlay to preview Graphic states of UI.Selectable (Button, Toggle etc) 
 
-![selectableOverlay](https://github.com/user-attachments/assets/f1b67658-7151-4555-b43d-d12300094f56)
+![selectableOverlay2](https://github.com/user-attachments/assets/419b50d8-11ab-4150-9c5b-2fb770c73135)
+
 ## Installation
 - copy [SceneOverlayPreviewSelectable.cs](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SceneOverlayPreviewSelectable.cs) to folder "Project/Assets/../Editor/.."
 ## Summary
