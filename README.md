@@ -37,7 +37,7 @@ Docked toolbar view
 
 ![image](https://github.com/user-attachments/assets/225fe27a-8d19-49ca-9383-2e83f013ad94)
 
-Button state is overriden to Selected, also scaled by custom script based on UI.Selectable.DoStateTransition()
+Button state is overriden to Pressed, also scaled by custom script based on UI.Selectable.DoStateTransition()
 
 ![image](https://github.com/user-attachments/assets/b4110b57-6f0f-417f-9d14-888a659d5873)
 
