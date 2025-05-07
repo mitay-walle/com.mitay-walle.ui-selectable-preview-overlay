@@ -59,14 +59,20 @@ Next toggles **work with any Selectable** .only toggle one can be active at once
 ## Overlay Presentation
 Overlay can display in next modes:
 1. Panel
+
 ![image](https://github.com/user-attachments/assets/c6db07fb-74f3-4c1b-911f-d28972dedabc)
 
-9. Horizontal toolbar 
+2. Horizontal toolbar
+
 ![image](https://github.com/user-attachments/assets/cb7c8f9c-944f-4a03-b38b-803eb7f4be6d)
 
-10. Vertical 
+3. Vertical 
+
 ![image](https://github.com/user-attachments/assets/f70aa3ef-91a6-4fcb-b902-fd327f8973f3)
-11. Collapsed
+4. Collapsed
+
 ![image](https://github.com/user-attachments/assets/92c5fbe7-6608-48e3-b3fc-ed4c36f4d04b)
+
 Mode can be switched by docking Overlay to Scene window sidebars, or by overlay -> right mouse click -> mode
+
 ![](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SelectablesOverlayDoc3.png?raw=true)
