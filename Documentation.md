@@ -46,7 +46,7 @@ Overlay has different toggles, that force specific Selectable state
 - If no toggles enabled in overlay, Selectable component work as is
 - if any toggle is pressed then state of selected Selectables is forced
 
-Next toggles **work with any Selectable** .only toggle one can be active at once
+Next toggles **work with any Selectable** .only one toggle can be active at once
 1. Normal (interactive, not selected, no pointer upon, no pointer pressed )
 2. Highlighted (interactive, pointer upon, no pointer pressed )
 3. Pressed (interactive, pointer pressed )
