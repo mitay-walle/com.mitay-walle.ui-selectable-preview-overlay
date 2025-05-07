@@ -28,7 +28,7 @@ namespace Plugins.mitaywalle.UI.Editor
 		private static PropertyInfo _isPointerInside;
 		private static PropertyInfo _hasSelection;
 		private static SelectionState? _selectionState;
-		private static bool _isOn;
+		private static bool _isOnInverted;
 		private static Type _type;
 		private static object[] _args1 = new object[1];
 		private static object[] _args2 = new object[2];
@@ -108,7 +108,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 			var toggle2 = new EditorToolbarToggle("Inverted");
 			toggle2.icon = Icons.isOn;
-			toggle2.SetValueWithoutNotify(_isOn);
+			toggle2.SetValueWithoutNotify(_isOnInverted);
 			toggle2.RegisterValueChangedCallback(value => { SetToggleClick(value.newValue); });
 
 			root.Add(toggle2);
@@ -125,6 +125,10 @@ namespace Plugins.mitaywalle.UI.Editor
 
 		private void OnSelectionChanged()
 		{
+			if (_selectionState == null && !_isOnInverted)
+			{
+				return; 
+			}
 			RevertLast();
 			RebuildSelectablesVisual();
 			_last = Selection.gameObjects;
@@ -170,14 +174,14 @@ namespace Plugins.mitaywalle.UI.Editor
 
 				if (selectable is Toggle toggle)
 				{
-					SetToggleValue(toggle, _isOn);
+					SetToggleValue(toggle, _isOnInverted);
 				}
 			}
 		}
 
 		private static void SetToggleClick(bool state)
 		{
-			_isOn = state;
+			_isOnInverted = state;
 			RebuildSelectablesVisual();
 		}
 
@@ -383,7 +387,7 @@ namespace Plugins.mitaywalle.UI.Editor
 			{
 				icon = Icons.isOn;
 				tooltip = "isOn inverted";
-				SetValueWithoutNotify(_isOn);
+				SetValueWithoutNotify(_isOnInverted);
 				this.RegisterValueChangedCallback(newValue => SetToggleClick(newValue.newValue));
 			}
 		}
