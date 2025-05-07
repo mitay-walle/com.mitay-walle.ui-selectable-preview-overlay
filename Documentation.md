@@ -32,10 +32,13 @@ Example:
 - Any custom Selectable, animated through [UI.Selectable.DoStateTransition()](https://docs.unity.cn/Packages/com.unity.ugui@1.0/api/UnityEngine.UI.Selectable.html#UnityEngine_UI_Selectable_DoStateTransition_UnityEngine_UI_Selectable_SelectionState_System_Boolean_)
 
 ## IMPORTANT
- 1. Overlay hide if no Selected Selectables
+ 1. Overlay hide if no Selectables in Selection
+    
 ![](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SelectablesOverlayDoc.gif?raw=true)
+ 
  2. Selectable (and it's prefab or scene) is marked dirty when switching (or forcing) states
-![](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SelectablesOverlayDoc2.gif?raw=true)
+    
+ ![](https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay/blob/main/SelectablesOverlayDoc2.gif?raw=true)
 ## Overlay Content (Toggles)
 
 Overlay has different toggles, that force specific Selectable state
