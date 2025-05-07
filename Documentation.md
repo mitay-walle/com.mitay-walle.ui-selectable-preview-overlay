@@ -69,6 +69,7 @@ Overlay can display in next modes:
 3. Vertical 
 
 ![image](https://github.com/user-attachments/assets/f70aa3ef-91a6-4fcb-b902-fd327f8973f3)
+
 4. Collapsed
 
 ![image](https://github.com/user-attachments/assets/92c5fbe7-6608-48e3-b3fc-ed4c36f4d04b)
