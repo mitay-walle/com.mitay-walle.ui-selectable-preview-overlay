@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.Overlays;
 using UnityEditor.Toolbars;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Image = UnityEngine.UIElements.Image;
