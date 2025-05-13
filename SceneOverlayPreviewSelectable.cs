@@ -426,7 +426,7 @@ namespace Plugins.mitaywalle.UI.Editor
 
 		private static Texture2D Create(string text)
 		{
-			var t = new Texture2D(16, 16);
+			var t = new Texture2D(16, 16,DefaultFormat.LDR,TextureCreationFlags.None);
 			t.LoadImage(Convert.FromBase64String(text));
 			return t;
 		}
