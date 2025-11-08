@@ -1,0 +1,7 @@
+{
+  "name": "com.mitay-walle.ui-selectable-preview-overlay",
+  "version": "1.0.0",
+  "displayName": " UI Selectable Overlay",
+  "description": "Unity3d SceneView Overlay to preview Graphic states of UI.Selectable (Button, Toggle etc)",
+   "unity": "2017.1"
+}
