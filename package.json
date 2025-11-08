@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "displayName": " UI Selectable Overlay",
   "description": "Unity3d SceneView Overlay to preview Graphic states of UI.Selectable (Button, Toggle etc)",
-   "unity": "2017.1"
+  "unity": "2017.1",
+  "_fingerprint": "ecee993e85292ea26f91ce34bdcb22ec88a54b53"
 }
