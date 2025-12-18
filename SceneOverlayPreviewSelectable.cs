@@ -55,7 +55,6 @@ namespace Plugins.mitaywalle.UI.Editor
 			SceneView.duringSceneGui -= OnSceneGUI;
 			SceneView.duringSceneGui += OnSceneGUI;
 			var type = typeof(Selectable);
-			collapsedIcon = (Texture2D)EditorGUIUtility.IconContent("d_Selectable Icon").image;
 			_togglePlayEffect = typeof(Toggle).GetMethod("PlayEffect", BindingFlags.Instance | BindingFlags.NonPublic);
 			_OnValidate = type.GetMethod("OnValidate", BindingFlags.Instance | BindingFlags.NonPublic);
 			_OnCanvasGroupChanged = type.GetMethod("OnCanvasGroupChanged", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -287,7 +286,11 @@ namespace Plugins.mitaywalle.UI.Editor
 				_OnCanvasGroupChanged.Invoke(selectable, null);
 				_OnValidate.Invoke(selectable, null);
 			}
-			EditorUtility.SetDirty(selectable);
+
+			if (!Application.isPlaying)
+			{
+				EditorApplication.QueuePlayerLoopUpdate();
+			}
 		}
 
 		/// <summary>
